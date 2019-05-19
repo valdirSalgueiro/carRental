@@ -79,12 +79,8 @@ public class RentalServiceImpl implements RentalService {
         long diff = TimeUnit.DAYS.convert(diffMilliseconds, TimeUnit.MILLISECONDS);
 
         String daysRemaining = Long.toString(diff);
-        Map<String, String> actionMap = new HashMap<>();
-        actionMap.put("id", Long.toString(id));
-        actionMap.put("days", daysRemaining);
-        actionMap.put("customer", rental.get().getCustomer());
-
-        rabbitTemplate.convertAndSend(CarrentalApplication.RENTAL_MESSAGE_QUEUE, actionMap);
-        return daysRemaining;
+        String response = daysRemaining + "," + rental.get().getCustomer();
+        rabbitTemplate.convertAndSend(CarrentalApplication.RENTAL_MESSAGE_QUEUE, response);
+        return response;
     }
 }
