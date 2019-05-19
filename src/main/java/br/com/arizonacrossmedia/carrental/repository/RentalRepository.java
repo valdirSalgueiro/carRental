@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface RentalRepository extends CrudRepository<Rental, Long>
 {
+    List<Rental> findByCustomerContaining(String customer);
     List<Rental> findByCustomer(String customer);
 }

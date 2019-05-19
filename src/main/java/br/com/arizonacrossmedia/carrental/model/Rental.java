@@ -5,16 +5,20 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import javax.persistence.Entity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Entity
 public class Rental extends AbstractEntity
 {
+    @NotEmpty
     private String customer;
 
+    @NotEmpty
     @Temporal(TemporalType.DATE)
     private Date start;
 
+    @NotEmpty
     @Temporal(TemporalType.DATE)
     private Date end;
 
