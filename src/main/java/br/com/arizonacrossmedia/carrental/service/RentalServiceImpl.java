@@ -60,7 +60,7 @@ public class RentalServiceImpl implements RentalService {
         if (rental.getStart().compareTo(rental.getEnd()) > 0) {
             throw new RentalServiceException("Rental start date must be before end date");
         }
-        if (rentalRepository.findByCustomer(rental.getCustomer()).size() > 0) {
+        if (rental.getId() == null && rentalRepository.findByCustomer(rental.getCustomer()).size() > 0) {
             throw new RentalServiceException("Customer already has a rental");
         }
         return rentalRepository.save(rental);
