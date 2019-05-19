@@ -8,9 +8,11 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class CarrentalApplication {
 
+    public final static String RENTAL_MESSAGE_QUEUE = "rental-message-queue";
+
     @Bean
-    public Queue hello() {
-        return new Queue("rentalQueue");
+    public Queue queue() {
+        return new Queue(RENTAL_MESSAGE_QUEUE);
     }
 
     public static void main(String[] args) {

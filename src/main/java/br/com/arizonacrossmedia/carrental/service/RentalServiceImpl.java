@@ -1,5 +1,6 @@
 package br.com.arizonacrossmedia.carrental.service;
 
+import br.com.arizonacrossmedia.carrental.CarrentalApplication;
 import br.com.arizonacrossmedia.carrental.exceptions.RentalNotFoundException;
 import br.com.arizonacrossmedia.carrental.exceptions.RentalServiceException;
 import br.com.arizonacrossmedia.carrental.model.Rental;
@@ -9,10 +10,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -76,8 +74,17 @@ public class RentalServiceImpl implements RentalService {
     public String sendRemainingMessage(long id) {
         verifyByRentalById(id);
         Optional<Rental> rental = rentalRepository.findById(id);
+
         long diffMilliseconds = rental.get().getEnd().getTime() - new Date().getTime();
         long diff = TimeUnit.DAYS.convert(diffMilliseconds, TimeUnit.MILLISECONDS);
-        return Long.toString(diff);
+
+        String daysRemaining = Long.toString(diff);
+        Map<String, String> actionMap = new HashMap<>();
+        actionMap.put("id", Long.toString(id));
+        actionMap.put("days", daysRemaining);
+        actionMap.put("customer", rental.get().getCustomer());
+
+        rabbitTemplate.convertAndSend(CarrentalApplication.RENTAL_MESSAGE_QUEUE, actionMap);
+        return daysRemaining;
     }
 }
